@@ -1,0 +1,46 @@
+version: "3.5"
+
+services:
+
+  django:
+    build: ./app
+    ports:
+    - "8002:8002"
+    - "8001:8001"
+    environment:
+    # instance
+    - INSTANCE=local
+    # django
+    - DJANGO_SETTINGS_MODULE=conf.local
+    - DJANGO_DEBUG=True
+    - DJANGO_PORT=8000
+    - DJANGO_SECRET_KEY=qvkjrEKk6RxzAcwV6JyjFJd4pL52mis2kHJxQGsLTvHWtz3YUz
+    # postgres
+    - POSTGRES_USER=demo
+    - POSTGRES_PASS=demo
+    - POSTGRES_DB=demo
+    - POSTGRES_HOST=db
+    - POSTGRES_PORT=5432
+    # demo
+    depends_on:
+    - db
+    networks:
+    - demonetwork
+
+  db:
+    image: postgres
+    ports:
+    - "5432:5432"
+    environment:
+    - POSTGRES_USER=demo
+    - POSTGRES_PASSWORD=demo
+    - POSTGRES_DB=demo
+    volumes:
+    - /data/postgres-data-demo:/var/lib/postgresql/data
+    tty: true
+    networks:
+    - demonetwork
+
+networks:
+  demonetwork:
+    name: demo_network
